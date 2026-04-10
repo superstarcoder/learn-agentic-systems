@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 2: RAG Systems</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="module.css" />
+  <link rel="stylesheet" href="part2.css" />
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      flowchart: {
+        nodeSpacing:  55,
+        rankSpacing:  70,
+        padding:      18,
+        useMaxWidth:  false,
+        curve:        'basis',
+      },
+      themeVariables: {
+        primaryColor:        '#0d1f3c',
+        primaryTextColor:    '#e0e8ff',
+        primaryBorderColor:  '#4fc3f7',
+        lineColor:           '#4fc3f7',
+        secondaryColor:      '#132848',
+        tertiaryColor:       '#050d1a',
+        background:          '#0a1628',
+        mainBkg:             '#0d1f3c',
+        nodeBorder:          '#4fc3f7',
+        clusterBkg:          '#07111f',
+        clusterBorder:       '#1e3a5f',
+        titleColor:          '#e0e8ff',
+        edgeLabelBackground: '#0a1628',
+        fontFamily:          'Inter, Segoe UI, system-ui, sans-serif',
+        fontSize:            '14px'
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-links">
+        <a href="part1.html" class="nav-link">Architecture</a>
+        <a href="part2.html" class="nav-link nav-link--active">RAG</a>
+        <a href="part3.html" class="nav-link">MCP</a>
+        <a href="part4.html" class="nav-link">Skills</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="module-page-layout">
+
+    <!-- Progress sidebar -->
+    <aside class="progress-sidebar">
+      <p class="sidebar-header">Contents</p>
+      <nav class="sidebar-nav" aria-label="Section navigation">
+
+        <a href="#section-what-is-rag" class="sidebar-link" data-target="section-what-is-rag">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">What is RAG?</span>
+        </a>
+
+        <a href="#section-core-concepts" class="sidebar-link" data-target="section-core-concepts">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Core Concepts</span>
+        </a>
+
+        <a href="#section-naive-rag" class="sidebar-link" data-target="section-naive-rag">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Naive RAG</span>
+        </a>
+
+        <a href="#section-hybrid-rag" class="sidebar-link" data-target="section-hybrid-rag">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Hybrid RAG</span>
+        </a>
+
+        <a href="#section-agentic-rag" class="sidebar-link" data-target="section-agentic-rag">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Agentic RAG</span>
+        </a>
+
+        <a href="#section-mental-models" class="sidebar-link" data-target="section-mental-models">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Mental Models</span>
+        </a>
+
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="module-main">
+
+      <!-- Module hero -->
+      <div class="module-hero">
+        <div class="module-hero-badge-row">
+          <span class="module-number">02</span>
+          <span class="module-hero-label">RAG Systems</span>
+        </div>
+        <h1 class="module-hero-title">RAG Systems</h1>
+        <p class="module-hero-subtitle">
+          Retrieval-Augmented Generation grounds your LLM in real data at inference time.
+          From a single vector lookup to an autonomous retrieval agent, learn how RAG systems
+          scale in power and complexity.
+        </p>
+        <div class="module-meta-row">
+          <span class="meta-item">6 sections</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">3 RAG variants</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">6 quizzes</span>
+        </div>
+        <div class="module-progress-track">
+          <div class="module-progress-fill" id="module-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           Section 00: What is RAG?
+           ============================================================ -->
+      <section class="content-section" id="section-what-is-rag">
+
+        <div class="section-header">
+          <span class="section-num">00</span>
+          <h2 class="section-heading">What is RAG?</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            RAG (Retrieval-Augmented Generation) is a technique where relevant information
+            is retrieved from a knowledge base and handed to the LLM to generate a grounded
+            answer. Rather than relying solely on what the model learned during training,
+            RAG grounds responses in external data at inference time.
+          </p>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">Key Concept</div>
+            <p class="key-concept-text">
+              An LLM's training data has a cutoff date and is finite. RAG gives it access to
+              current, private, or domain-specific knowledge it was never trained on, by
+              retrieving that knowledge at the moment of answering.
+            </p>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="what-is-rag">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-what-is-rag">
+          <div
+            data-type="truefalse"
+            data-question="RAG improves an LLM's answers by retraining it on new data before each query."
+            data-correct="false"
+            data-explanation="RAG does not involve retraining. It retrieves relevant external documents at inference time and injects them into the prompt as context. The model weights stay frozen; only the input changes.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-what-is-rag" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 01: Core Concepts
+           ============================================================ -->
+      <section class="content-section" id="section-core-concepts">
+
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-heading">Core Concepts</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Before diving into the RAG variants, it helps to understand the building blocks
+            every RAG system is built on.
+          </p>
+
+          <h3 class="subsection-heading">Chunking</h3>
+          <p>
+            Documents are too large to fit into a prompt wholesale, so they are split into
+            smaller pieces called <strong>chunks</strong>. Chunk size is a tunable parameter:
+            too small and you lose context, too large and you introduce noise. Common strategies
+            include fixed-size chunking (e.g., 512 tokens with overlap), sentence-level
+            splitting, and recursive character splitting.
+          </p>
+
+          <h3 class="subsection-heading">Embeddings</h3>
+          <p>
+            Each chunk is passed through an embedding model (e.g., <code>text-embedding-3-small</code>
+            from OpenAI, or <code>bge-large</code> from HuggingFace) which converts it into a
+            high-dimensional vector: a list of floating-point numbers that encodes the semantic
+            meaning of the text. Chunks that are semantically similar end up with vectors that
+            are close together in this high-dimensional space.
+          </p>
+
+          <h3 class="subsection-heading">Vector Stores</h3>
+          <p>
+            These embedding vectors are stored in a vector database (e.g., Pinecone, Weaviate,
+            pgvector, Chroma). At query time, the user's question is also embedded, and the
+            vector store retrieves the chunks whose vectors are closest to the query vector,
+            typically using <strong>cosine similarity</strong> or <strong>dot product</strong>
+            as the distance metric.
+          </p>
+
+          <h3 class="subsection-heading">The Retrieval-Generation Pipeline</h3>
+
+          <div class="code-block">
+            <span class="code-block-label">Pipeline</span>
+            <pre>User query
+   |
+   v
+Embed query --> Vector search --> Top-k chunks
+                                      |
+                                      v
+                              Inject into prompt --> LLM --> Final answer</pre>
+          </div>
+
+          <p>
+            The retrieved chunks are injected into the LLM's prompt as context, and the model
+            generates an answer grounded in that retrieved information.
+          </p>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="core-concepts">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-core-concepts">
+          <div
+            data-type="mcq"
+            data-question="What happens when chunk size is set too small in a RAG system?"
+            data-options='["Retrieval becomes slower", "You lose surrounding context that may be needed to answer the question", "The embedding model produces less accurate vectors", "The vector store runs out of storage"]'
+            data-correct="1"
+            data-explanation="Chunks that are too small lose the surrounding context that often gives meaning to a passage. A sentence alone may not carry enough information; the paragraphs around it often do. Too large, and you introduce noise that dilutes the relevant signal.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-core-concepts" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 02: Naive RAG
+           ============================================================ -->
+      <section class="content-section" id="section-naive-rag">
+
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-heading">Naive RAG <span class="section-tag">Baseline</span></h2>
+        </div>
+
+        <div class="section-body">
+
+          <div class="analogy-block">
+            <span class="analogy-icon">&#128218;</span>
+            <p>Think of it like an open-book exam with sticky notes.</p>
+          </div>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart LR
+    subgraph Ingestion
+        D[Documents] --> C[Chunker]
+        C --> E[Embedding Model]
+        E --> VS[(Vector Store)]
+    end
+
+    subgraph Query
+        Q([User Query]) --> EQ[Embed Query]
+        EQ -->|cosine similarity| VS
+        VS -->|top-k chunks| P[Prompt Builder]
+        P --> LLM[LLM]
+        LLM --> R([Response])
+    end
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">How it works</h3>
+          <ol class="steps-list">
+            <li>Pre-read all documents and write "sticky notes" (embeddings) for each chunk.</li>
+            <li>A question comes in.</li>
+            <li>Find the sticky notes most semantically similar to the question.</li>
+            <li>Hand those notes to the LLM: "Answer using these."</li>
+          </ol>
+
+          <h3 class="subsection-heading">Technical details</h3>
+          <p>
+            The retrieval step is a single <strong>approximate nearest neighbor (ANN) search</strong>
+            over the vector store. Libraries like FAISS use ANN algorithms (e.g., HNSW: Hierarchical
+            Navigable Small World graphs) to make this search fast even over millions of vectors,
+            trading a small amount of accuracy for a large gain in speed.
+          </p>
+          <p>
+            The top-k chunks (typically k=3 to 10) are concatenated into the prompt. The model
+            sees something like:
+          </p>
+
+          <div class="code-block">
+            <span class="code-block-label">Prompt template</span>
+            <pre>Context:
+[Chunk 1] ...
+[Chunk 2] ...
+[Chunk 3] ...
+
+Question: What is the refund policy?
+Answer:</pre>
+          </div>
+
+          <h3 class="subsection-heading">Weaknesses</h3>
+          <ul class="highlight-list">
+            <li>
+              Retrieval is purely similarity-based. A query like "What did the CEO say last
+              quarter?" might retrieve chunks that sound relevant but miss the actual quote if
+              the wording does not align well with the embedding space.
+            </li>
+            <li>
+              No mechanism to verify whether the retrieved chunks are actually sufficient to
+              answer the question.
+            </li>
+            <li>
+              Chunk boundaries can cut off important context.
+            </li>
+          </ul>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">📄</span>
+                <span class="example-card-title">PDF Chatbots</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Early document Q&amp;A tools that embed a document and answer questions with a single vector lookup. Simple and effective for narrow, well-structured documents.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🗂️</span>
+                <span class="example-card-title">Internal Knowledge Bases</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Basic assistants that retrieve the closest FAQ entry and generate a response from it. Common first step for teams adding AI to their internal docs.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">💬</span>
+                <span class="example-card-title">Customer Support Bots</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Entry-level bots that match a user's question to the nearest help article using embeddings. Fast to build, but limited to exact-match style queries.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="naive-rag">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-naive-rag">
+          <div
+            data-type="mcq"
+            data-question="What is the core weakness of Naive RAG's retrieval step?"
+            data-options='["It is too slow for production use", "Retrieval is purely similarity-based and can miss relevant content if wording does not match the embedding space", "It cannot handle more than one document", "It requires the LLM to be retrained for each new document set"]'
+            data-correct="1"
+            data-explanation="Naive RAG retrieves chunks by vector similarity, so if the user's query uses different wording than the relevant chunk, it may not surface the right content. There is also no way to check whether what was retrieved is actually sufficient to answer the question.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-naive-rag" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 03: Hybrid RAG
+           ============================================================ -->
+      <section class="content-section" id="section-hybrid-rag">
+
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-heading">Hybrid RAG <span class="section-tag">Smarter search</span></h2>
+        </div>
+
+        <div class="section-body">
+
+          <div class="analogy-block">
+            <span class="analogy-icon">&#128269;</span>
+            <p>Same open-book exam, but smarter search.</p>
+          </div>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart LR
+    subgraph Ingestion
+        D[Documents] --> C[Chunker]
+        C --> E[Embedding Model]
+        C --> IDX["Inverted Index\nBM25"]
+        E --> VS[(Vector Store)]
+    end
+
+    subgraph Query
+        Q([User Query]) --> EQ[Embed Query]
+        Q --> KQ[Keyword Query]
+
+        EQ -->|ANN search| VS
+        KQ -->|BM25 scoring| IDX
+
+        VS -->|ranked list A| RRF[RRF Fusion]
+        IDX -->|ranked list B| RRF
+
+        RRF -->|merged candidates| RE["Cross-Encoder\nReranker"]
+        RE -->|top-k reranked| P[Prompt Builder]
+        P --> LLM[LLM]
+        LLM --> R([Response])
+    end
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">How it works</h3>
+          <ol class="steps-list">
+            <li>Same chunking and storage setup as Naive RAG.</li>
+            <li>A question comes in.</li>
+            <li>
+              Run <strong>two searches in parallel:</strong> semantic search (embeddings) finds
+              conceptually related chunks, keyword search (BM25) finds exact word matches.
+            </li>
+            <li>Merge and rerank the results from both searches.</li>
+            <li>Hand the best combined results to the LLM.</li>
+          </ol>
+
+          <h3 class="subsection-heading">Technical details</h3>
+          <p>
+            <strong>BM25 (Best Match 25)</strong> is a classical information retrieval algorithm
+            that scores documents based on term frequency and inverse document frequency (TF-IDF),
+            with length normalization. It excels at exact keyword matching, which dense embeddings
+            can miss: especially for rare terms, proper nouns, or technical jargon.
+          </p>
+          <p>
+            The two result sets are merged using <strong>Reciprocal Rank Fusion (RRF)</strong>,
+            a simple but effective algorithm that combines ranked lists without needing to
+            normalize scores across different scales:
+          </p>
+
+          <div class="code-block">
+            <span class="code-block-label">RRF formula</span>
+            <pre>RRF_score(chunk) = sum over each ranker of: 1 / (k + rank)
+
+Where k = 60 (constant that dampens the impact of very high ranks).
+Chunks near the top in both rankings get boosted.</pre>
+          </div>
+
+          <p>
+            After fusion, a <strong>cross-encoder reranker</strong> (e.g., Cohere Rerank, or a
+            local <code>ms-marco</code> model) is often applied. Unlike bi-encoders used in
+            vector search, a cross-encoder takes the query and a candidate chunk together as
+            input and outputs a relevance score. This is slower but significantly more accurate,
+            making it practical as a second-pass filter over the top candidates.
+          </p>
+
+          <h3 class="subsection-heading">Weaknesses</h3>
+          <ul class="highlight-list">
+            <li>More infrastructure to maintain (vector store + inverted index).</li>
+            <li>Reranking adds latency.</li>
+            <li>
+              Still a single retrieval pass: no ability to recognize when retrieved results
+              are insufficient.
+            </li>
+          </ul>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🔍</span>
+                <span class="example-card-title">Elasticsearch Enterprise Search</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Enterprise search systems that combine BM25 keyword matching with dense vector search for more accurate and robust document retrieval across large corpora.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">⚖️</span>
+                <span class="example-card-title">Legal &amp; Medical Q&amp;A</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Tools where exact terminology (drug names, legal citations) must be matched precisely, but conceptual context also matters. Hybrid retrieval handles both.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">📝</span>
+                <span class="example-card-title">Notion AI / Confluence AI</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Tools that blend keyword and semantic search over large internal wikis, giving users results that match both the literal words and the intent behind their queries.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="hybrid-rag">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-hybrid-rag">
+          <div
+            data-type="mcq"
+            data-question="What specific weakness of semantic (embedding-based) search does BM25 help address in Hybrid RAG?"
+            data-options='["BM25 handles multi-language queries better", "BM25 excels at exact keyword matching, catching rare terms and proper nouns that embeddings can miss", "BM25 is faster than ANN search for large corpora", "BM25 reduces the need for chunking"]'
+            data-correct="1"
+            data-explanation="Dense embeddings capture semantic meaning well, but can struggle with exact matches for rare terms, product names, drug names, or legal citations where the specific word matters more than the concept. BM25 uses term frequency and inverse document frequency to score exact matches, complementing the semantic search.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-hybrid-rag" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 04: Agentic RAG
+           ============================================================ -->
+      <section class="content-section" id="section-agentic-rag">
+
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-heading">Agentic RAG <span class="section-tag">Most powerful</span></h2>
+        </div>
+
+        <div class="section-body">
+
+          <div class="analogy-block">
+            <span class="analogy-icon">&#128373;</span>
+            <p>Instead of a student doing one lookup, you have a detective working a case.</p>
+          </div>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    Q([User Query]) --> AG["Agent\nReAct Loop"]
+
+    AG -->|plan + search query| T1[Vector Search Tool]
+    AG -->|if needed| T2[Web Search Tool]
+    AG -->|if needed| T3[SQL Tool]
+    AG -->|if needed| T4[Calculator Tool]
+
+    T1 & T2 & T3 & T4 -->|observation| AG
+
+    AG -->|sufficient context?| CHK{Enough to answer?}
+    CHK -->|no: refine query| AG
+    CHK -->|yes| P[Prompt Builder]
+    P --> LLM[LLM]
+    LLM --> R([Response])
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">How it works</h3>
+          <ol class="steps-list">
+            <li>A question comes in.</li>
+            <li>The agent <strong>plans:</strong> "What do I actually need to find to answer this?"</li>
+            <li>It retrieves something.</li>
+            <li>It reads the result and asks itself: "Do I have enough? What's still missing?"</li>
+            <li>
+              If not satisfied, it retrieves again with a refined query, or switches tools
+              entirely (web search, SQL, calculator, etc.).
+            </li>
+            <li>Repeats until it can answer confidently.</li>
+            <li>Generates the final response.</li>
+          </ol>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">Key Distinction</div>
+            <p class="key-concept-text">
+              In Naive and Hybrid RAG, the LLM is the endpoint of the pipeline. In Agentic RAG,
+              the LLM runs the pipeline.
+            </p>
+          </div>
+
+          <h3 class="subsection-heading">Technical details</h3>
+          <p>
+            Agentic RAG typically implements a <strong>ReAct loop</strong> (Reasoning + Acting),
+            where the LLM interleaves thought steps with tool calls:
+          </p>
+
+          <div class="code-block">
+            <span class="code-block-label">ReAct trace example</span>
+            <pre>Thought: The user is asking about Q3 revenue. I should search the earnings docs first.
+Action: vector_search("Q3 revenue 2024")
+Observation: [retrieved chunks about total revenue...]
+
+Thought: These chunks mention total revenue but not the regional breakdown.
+Action: vector_search("Q3 revenue breakdown by region 2024")
+Observation: [retrieved chunks with regional data...]
+
+Thought: I now have enough to answer.
+Final Answer: ...</pre>
+          </div>
+
+          <p>
+            <strong>Query rewriting</strong> is another key technique: rather than passing the
+            raw user query into retrieval, the agent rewrites it into a more precise search query
+            based on what it already knows. This significantly improves retrieval quality for
+            multi-hop questions (questions that require chaining multiple pieces of information).
+          </p>
+
+          <h3 class="subsection-heading">Weaknesses</h3>
+          <ul class="highlight-list">
+            <li>Multiple retrieval calls means higher latency and cost.</li>
+            <li>
+              The agent can get stuck in retrieval loops or make poor decisions about when it
+              has enough information.
+            </li>
+            <li>Harder to debug and trace than a fixed pipeline.</li>
+          </ul>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🔍</span>
+                <span class="example-card-title">Perplexity AI</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Iteratively searches the web, evaluates results, and refines its queries before synthesizing a final answer. The retrieval loop is the core of the product.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">📈</span>
+                <span class="example-card-title">Financial Research Assistants</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Pull from SEC filings, run SQL queries over earnings data, and cross-reference news sources before generating an investment summary. Multi-source, multi-hop retrieval.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">💻</span>
+                <span class="example-card-title">Devin / OpenHands</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Iteratively read code, run tests, interpret errors, and search documentation until a bug is resolved. The agent decides when it has gathered enough context to act.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="agentic-rag">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-agentic-rag">
+          <div
+            data-type="scenario"
+            data-question="A user asks: 'How did our Q3 regional sales compare to Q2, and what factors drove the difference?' The answer requires chaining data from two separate reports. Which RAG approach handles this best?"
+            data-options='["Naive RAG, because a single semantic search is sufficient", "Hybrid RAG, because BM25 will catch the exact quarter names", "Agentic RAG, because it can retrieve iteratively and reason about what is still missing", "None of the above"]'
+            data-correct="2"
+            data-explanation="Multi-hop questions that require chaining information from multiple sources are exactly where Agentic RAG excels. The agent can retrieve Q3 data, realize it also needs Q2 data, retrieve that, reason about the difference, and only then synthesize an answer. Naive and Hybrid RAG do a single retrieval pass and cannot recognize when they need to look again.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-agentic-rag" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 05: Mental Models
+           ============================================================ -->
+      <section class="content-section" id="section-mental-models">
+
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <h2 class="section-heading">Mental Models</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Each RAG variant trades complexity for capability. Here is a one-line model
+            for each to help you choose the right one for a given problem.
+          </p>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Mental Model</th>
+                  <th>Best For</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Naive RAG</strong></td>
+                  <td>Find &#8594; Answer</td>
+                  <td>Simple Q&amp;A over a well-structured document corpus</td>
+                </tr>
+                <tr>
+                  <td><strong>Hybrid RAG</strong></td>
+                  <td>Find smarter &#8594; Answer</td>
+                  <td>Domains with precise terminology or large mixed corpora</td>
+                </tr>
+                <tr>
+                  <td><strong>Agentic RAG</strong></td>
+                  <td>Plan &#8594; Find &#8594; Think &#8594; Find again &#8594; Answer</td>
+                  <td>Multi-hop questions, cross-source reasoning, open-ended research</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="mental-models">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-mental-models">
+          <div
+            data-type="mcq"
+            data-question="Which RAG variant best matches the mental model: 'Plan, find, think, find again, answer'?"
+            data-options='["Naive RAG", "Hybrid RAG", "Agentic RAG", "All three, they all follow the same steps"]'
+            data-correct="2"
+            data-explanation="Agentic RAG is the only variant with an iterative loop. The agent plans what to look for, retrieves, reasons about whether it has enough, and repeats as needed. Naive RAG is find-then-answer in one pass. Hybrid RAG finds smarter but still in a single pass.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-mental-models" hidden></div>
+
+      </section>
+
+      <!-- Bottom navigation -->
+      <div class="module-nav-row">
+        <a href="part1.html" class="module-nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back: Architecture Patterns
+        </a>
+        <a href="part3.html" class="module-nav-btn module-nav-btn--next">
+          Next: Model Context Protocol
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">agentic</span>
+        <span class="logo-bracket">]</span>
+      </div>
+      <p class="footer-tagline">Understanding the architecture of intelligent systems.</p>
+      <div class="footer-links">
+        <a href="part1.html">Architecture</a>
+        <a href="part2.html">RAG</a>
+        <a href="part3.html">MCP</a>
+        <a href="part4.html">Skills</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="quiz.js"></script>
+
+  <script>
+    // ============================================================
+    // Scroll Spy
+    // ============================================================
+    const TOTAL_SECTIONS = 6;
+    const sectionOrder = [
+      'section-what-is-rag',
+      'section-core-concepts',
+      'section-naive-rag',
+      'section-hybrid-rag',
+      'section-agentic-rag',
+      'section-mental-models'
+    ];
+
+    const sections     = document.querySelectorAll('.content-section');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link[data-target]');
+    const progressFill = document.getElementById('module-progress-fill');
+
+    function setActive(id) {
+      sidebarLinks.forEach(link =>
+        link.classList.toggle('active', link.dataset.target === id)
+      );
+      const idx = sectionOrder.indexOf(id);
+      if (idx >= 0 && progressFill) {
+        progressFill.style.width = ((idx + 1) / TOTAL_SECTIONS * 100) + '%';
+      }
+    }
+
+    if (sections.length > 0) setActive(sections[0].id);
+
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => spy.observe(s));
+
+    // ============================================================
+    // Parallax orbs
+    // ============================================================
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      document.querySelector('.orb-1').style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+      document.querySelector('.orb-2').style.transform = `translate(${x * -15}px, ${y * -15}px)`;
+      document.querySelector('.orb-3').style.transform = `translate(${x * 10}px, ${y * -10}px)`;
+    });
+  </script>
+
+</body>
+</html>

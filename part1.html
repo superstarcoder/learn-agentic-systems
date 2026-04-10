@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 1: Agentic Architecture Patterns</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="module.css" />
+  <link rel="stylesheet" href="part1.css" />
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      flowchart: {
+        nodeSpacing:  60,
+        rankSpacing:  80,
+        padding:      20,
+        useMaxWidth:  false,
+        curve:        'basis',
+      },
+      themeVariables: {
+        primaryColor: '#0d1f3c',
+        primaryTextColor: '#e0e8ff',
+        primaryBorderColor: '#4fc3f7',
+        lineColor: '#4fc3f7',
+        secondaryColor: '#132848',
+        tertiaryColor: '#050d1a',
+        background:   '#0a1628',
+        mainBkg:      '#0d1f3c',
+        nodeBorder:   '#4fc3f7',
+        clusterBkg:   '#050d1a',
+        titleColor:   '#e0e8ff',
+        edgeLabelBackground: '#0a1628',
+        fontFamily:   'Inter, Segoe UI, system-ui, sans-serif',
+        fontSize:     '15px'
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-links">
+        <a href="part1.html" class="nav-link nav-link--active">Architecture</a>
+        <a href="part2.html" class="nav-link">RAG</a>
+        <a href="part3.html" class="nav-link">MCP</a>
+        <a href="part4.html" class="nav-link">Skills</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="module-page-layout">
+
+    <!-- Progress sidebar -->
+    <aside class="progress-sidebar">
+      <p class="sidebar-header">Contents</p>
+      <nav class="sidebar-nav" aria-label="Section navigation">
+
+        <a href="#section-what-is-agent" class="sidebar-link" data-target="section-what-is-agent">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">What is an Agent?</span>
+        </a>
+
+        <a href="#section-single-agent" class="sidebar-link" data-target="section-single-agent">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Single Agent Systems</span>
+        </a>
+
+        <a href="#section-swarm" class="sidebar-link" data-target="section-swarm">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Network of Agents</span>
+        </a>
+
+        <a href="#section-supervisor" class="sidebar-link" data-target="section-supervisor">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Supervisor Agent</span>
+        </a>
+
+        <a href="#section-hierarchical" class="sidebar-link" data-target="section-hierarchical">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Hierarchical Approach</span>
+        </a>
+
+        <a href="#section-custom" class="sidebar-link" data-target="section-custom">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Custom Architecture</span>
+        </a>
+
+        <a href="#section-nuances" class="sidebar-link" data-target="section-nuances">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Additional Nuances</span>
+        </a>
+
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="module-main">
+
+      <!-- Module hero -->
+      <div class="module-hero">
+        <div class="module-hero-badge-row">
+          <span class="module-number">01</span>
+          <span class="module-hero-label">Architecture Patterns</span>
+        </div>
+        <h1 class="module-hero-title">Agentic Architecture Patterns</h1>
+        <p class="module-hero-subtitle">
+          From single agents juggling tools to orchestrators directing fleets of specialists.
+          Learn the tradeoffs between swarms, pipelines, and hierarchies.
+        </p>
+        <div class="module-meta-row">
+          <span class="meta-item">7 sections</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">5 architectures</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">7 quizzes</span>
+        </div>
+        <div class="module-progress-track">
+          <div class="module-progress-fill" id="module-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           Section 00: What is an Agent?
+           ============================================================ -->
+      <section class="content-section" id="section-what-is-agent">
+
+        <div class="section-header">
+          <span class="section-num">00</span>
+          <h2 class="section-heading">What is an Agent?</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            At its core, an <strong>agent is an LLM that calls tools</strong>. The design of how
+            agents are structured and how they communicate with each other has a significant
+            impact on reliability, cost, and performance.
+          </p>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">Key Concept</div>
+            <p class="key-concept-text">
+              An agent = an LLM + tools + a loop. The model reasons, decides which tool to call,
+              observes the result, and repeats until it has enough information to respond.
+            </p>
+          </div>
+        </div>
+
+        <!-- Quiz trigger -->
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="what-is-agent">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <!-- Quiz data template -->
+        <template id="quiz-data-what-is-agent">
+          <div
+            data-type="truefalse"
+            data-question="An agent is defined as an LLM that has access to memory storage only."
+            data-correct="false"
+            data-explanation="An agent is an LLM that calls tools. Memory can be one of those tools, but the defining characteristic is autonomous tool use, not memory specifically.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-what-is-agent" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 01: Single Agent Systems
+           ============================================================ -->
+      <section class="content-section" id="section-single-agent">
+
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-heading">Single Agent Systems</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            A single agent has access to all available tools and handles everything on its own.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) --> A[Agent]
+    A --> T1[Tool: Search]
+    A --> T2[Tool: Calculator]
+    A --> T3[Tool: Email]
+    A --> T4[Tool: Database]
+    A --> T5[Tool: Calendar]
+    T1 & T2 & T3 & T4 & T5 --> A
+    A --> R([Response])
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">Problems</h3>
+          <ul class="highlight-list problem-list">
+            <li>
+              Too many tools leads to poor decision-making. The sweet spot is roughly
+              <strong>5 to 10 tools</strong> per agent.
+            </li>
+            <li>
+              As tools increase, so does context size, overwhelming the context window
+              and increasing hallucinations.
+            </li>
+            <li>
+              A single agent struggles to handle multiple specialization areas
+              (e.g., planning, research, math) simultaneously.
+            </li>
+          </ul>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🛎️</span>
+                <span class="example-card-title">Customer Support Bot</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A support chatbot that can look up orders, check FAQs, and issue refunds, all within a small, well-scoped tool set.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">💻</span>
+                <span class="example-card-title">Early Copilot Chat</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A coding assistant that answers questions, runs code, and reads files, all within a narrow, well-defined context.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">📅</span>
+                <span class="example-card-title">Productivity Assistant</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A personal assistant that manages your calendar, sends emails, and sets reminders.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Quiz trigger -->
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="single-agent">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <!-- Quiz data template -->
+        <template id="quiz-data-single-agent">
+          <div
+            data-type="mcq"
+            data-question="What is the recommended maximum number of tools for a single agent before reliability and decision quality degrades?"
+            data-options='["3 to 5", "5 to 10", "10 to 20", "There is no upper limit"]'
+            data-correct="1"
+            data-explanation="The sweet spot is roughly 5 to 10 tools. Beyond that, the agent faces too much decision overhead and the context window grows large enough to increase hallucinations.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-single-agent" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 02: Network of Agents (Swarm)
+           ============================================================ -->
+      <section class="content-section" id="section-swarm">
+
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-heading">Network of Agents (Swarm)</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Each agent has its own tools, and agents communicate by deciding who acts next,
+            with no central controller.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart LR
+    U([User]) --> A1
+
+    A1["Agent 1\nResearcher"] -->|routes to| A2["Agent 2\nWriter"]
+    A2 -->|routes to| A3["Agent 3\nMath Expert"]
+    A3 --> A1
+    A2 -->|routes to| A4["Agent 4\nReviewer"]
+    A4 --> A1
+    A4 --> A2
+
+    A1 --> T1[Search]
+    A2 --> T2[Draft]
+    A3 --> T3[Calculator]
+    A4 --> T4[Critic]
+
+    A4 --> R([Response])
+            </pre>
+          </div>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">On the term "swarm"</div>
+            <p class="key-concept-text">
+              The term is borrowed from swarm intelligence (think ant colonies). It refers to a
+              decentralized, multi-agent system where coordination emerges from agent-to-agent
+              interactions rather than a central authority. It is a loose term with no single
+              agreed-upon definition.
+            </p>
+          </div>
+
+          <h3 class="subsection-heading">Problem</h3>
+          <ul class="highlight-list problem-list">
+            <li>
+              Any agent can route to any other agent at any time. The lack of centralization
+              leads to unreliable results, longer execution times, and higher costs.
+            </li>
+          </ul>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🔬</span>
+                <span class="example-card-title">OpenAI Research Swarms</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Early experiments with agent swarms for open-ended research, where agents self-organized to divide and tackle subtasks without a central controller.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🎮</span>
+                <span class="example-card-title">Stanford Smallville</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Generative game AI where NPCs coordinate behaviors with each other without a central controller, as demonstrated in Stanford's simulation paper.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">💬</span>
+                <span class="example-card-title">Multi-Agent Debate Systems</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Experimental systems where multiple LLM agents argue positions and respond to each other, using peer-to-peer debate to arrive at a consensus.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="swarm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-swarm">
+          <div
+            data-type="mcq"
+            data-question="What is the defining characteristic that makes a multi-agent system a 'swarm' rather than a supervisor pattern?"
+            data-options='["All agents share the same base model", "Coordination emerges from peer-to-peer routing with no central controller", "A single agent manages all tool calls", "All agents share one context window"]'
+            data-correct="1"
+            data-explanation="A swarm is decentralized. Each agent decides who acts next without a central authority, borrowing the concept from swarm intelligence. The lack of a controller is precisely what makes it powerful and unpredictable in equal measure.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-swarm" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 03: Supervisor Agent
+           ============================================================ -->
+      <section class="content-section" id="section-supervisor">
+
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-heading">Supervisor Agent</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            A single <strong>supervisor agent</strong> is responsible for routing tasks to
+            specialized subagents. The supervisor thinks about <em>who</em> to call next;
+            subagents focus solely on <em>doing their job</em>.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) --> S
+
+    S[Supervisor Agent] -->|delegates| A1[Researcher Agent]
+    S -->|delegates| A2[Writer Agent]
+    S -->|delegates| A3[Math Agent]
+
+    A1 --> T1[Search Tool]
+    A2 --> T2[Draft Tool]
+    A3 --> T3[Calculator Tool]
+
+    A1 & A2 & A3 -->|results| S
+    S --> R([Response])
+            </pre>
+          </div>
+
+          <ul class="examples-list">
+            <li>Subagents can also be treated as tools within a larger system.</li>
+            <li>Centralized control leads to more predictable and reliable behavior.</li>
+          </ul>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🦜</span>
+                <span class="example-card-title">LangGraph Multi-Agent</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>The recommended multi-agent pattern: a top-level orchestrator routes between a researcher, writer, and critic agent to produce long-form content.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🏢</span>
+                <span class="example-card-title">Enterprise Report Pipeline</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A supervisor delegates to a data-fetching agent, a formatting agent, and an email-sending agent to generate and distribute reports automatically.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">👨‍💻</span>
+                <span class="example-card-title">Devin</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A planner agent coordinates subagents handling file editing, terminal commands, and browser testing to resolve software engineering tasks end-to-end.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="supervisor">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-supervisor">
+          <div
+            data-type="scenario"
+            data-question="You are building a content pipeline: research, write, and review. The order must be enforced and every step must be auditable. Which architecture fits best?"
+            data-options='["Single agent with all three tools", "Supervisor with three specialized subagents", "A swarm of three peer agents", "Hierarchical with two layers of supervisors"]'
+            data-correct="1"
+            data-explanation="A supervisor enforces order and gives you a single point of control for auditing. Each subagent focuses on one job. Swarms lack ordering guarantees, single agents mix concerns, and two layers of hierarchy adds unnecessary complexity for three sequential steps.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-supervisor" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 04: Hierarchical Approach
+           ============================================================ -->
+      <section class="content-section" id="section-hierarchical">
+
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-heading">Hierarchical Approach</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            The supervisor model extended recursively: a supervisor spawns subagents, which can
+            themselves act as supervisors with their own subagents. This allows agents to
+            organize into specialized clusters, handling complex nested workflows.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) --> S
+
+    S[Top-Level Supervisor] --> S1[Research Supervisor]
+    S[Top-Level Supervisor] --> S2[Engineering Supervisor]
+
+    S1 --> A1[Web Search Agent]
+    S1 --> A2[Document Agent]
+
+    S2 --> A3[Code Agent]
+    S2 --> A4[Test Agent]
+    S2 --> A5[Deploy Agent]
+
+    A1 & A2 -->|results| S1
+    A3 & A4 & A5 -->|results| S2
+
+    S1 & S2 -->|results| S
+    S --> R([Response])
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🤖</span>
+                <span class="example-card-title">AutoGPT / OpenDevin</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A top-level goal gets broken into subgoals, each managed by its own sub-supervisor with specialized workers. Classic recursive delegation.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🚀</span>
+                <span class="example-card-title">Software Release Pipeline</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>An AI system managing an entire software release: a top-level agent coordinates a testing supervisor (unit, integration, e2e) alongside a deployment supervisor (staging and production).</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🏦</span>
+                <span class="example-card-title">Multi-Department Assistant</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A company-wide orchestrator delegates to department supervisors (HR, Finance, Engineering), each running their own subagents for domain-specific tasks.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="hierarchical">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-hierarchical">
+          <div
+            data-type="mcq"
+            data-question="A hierarchical architecture differs from a flat supervisor architecture primarily because:"
+            data-options='["It uses more tools per agent", "Subagents can themselves act as supervisors with their own subagents", "There is no central controller", "All agents run in parallel at all times"]'
+            data-correct="1"
+            data-explanation="Hierarchy means recursion: a supervisor can spawn sub-supervisors, each managing their own workers. This enables deep specialization for complex nested workflows, unlike a flat supervisor which has only one level of delegation.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-hierarchical" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 05: Fully Custom Architecture
+           ============================================================ -->
+      <section class="content-section" id="section-custom">
+
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <h2 class="section-heading">Fully Custom Architecture <span class="section-heading-note">(most common)</span></h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            In practice, the most effective architecture is one <strong>tailored to the specific
+            domain</strong>. Custom architectures are the most common choice precisely because no
+            single pattern fits every use case.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) --> G[Gateway / Router]
+
+    G -->|simple query| A1[Single Agent]
+    G -->|complex task| S[Supervisor]
+    G -->|data question| DB[(Database Tool)]
+
+    S --> A2[Researcher]
+    S --> A3[Writer]
+    A2 --> WS[Web Search]
+    A2 --> RAG[RAG Pipeline]
+
+    A1 & S & DB -->|results| AGG[Aggregator]
+    AGG --> R([Response])
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">Real-world examples</h3>
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">✏️</span>
+                <span class="example-card-title">Cursor / AI IDEs</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A custom blend of single-agent tool use, retrieval, and multi-step planning tuned specifically for the code editing context. No standard pattern covers all of it.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🔍</span>
+                <span class="example-card-title">Perplexity AI</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Combines web search, retrieval, and generation in a pipeline purpose-built for its search-and-synthesize workflow. It does not fit neatly into any standard architecture.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🏭</span>
+                <span class="example-card-title">Production AI at Scale</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Most production AI at companies like Stripe, Notion, or LinkedIn uses bespoke orchestration logic designed around their specific data sources, APIs, and user workflows.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="custom">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-custom">
+          <div
+            data-type="scenario"
+            data-question="Why would a tool like Cursor (an AI IDE) benefit more from a Fully Custom Architecture than a generic Single Agent pattern?"
+            data-options='["It allows the AI to chat about any topic without constraints.", "It allows for specialized blending of code-index retrieval, multi-step planning, and real-time file editing that standard patterns can&apos;t handle.", "It ensures that the model always uses the most expensive LLM for every sub-task.", "Standard patterns are unable to connect to the internet."]'
+            data-correct="1"
+            data-explanation="Cursor is a great example of a custom architecture: it needs to index a codebase, retrieve relevant files on demand, plan multi-step edits, and stream changes back into the editor in real time. No single standard pattern covers all of that, so the architecture is purpose-built around the product's specific requirements.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-custom" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 06: Additional Nuances
+           ============================================================ -->
+      <section class="content-section" id="section-nuances">
+
+        <div class="section-header">
+          <span class="section-num">06</span>
+          <h2 class="section-heading">Additional Nuances</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            When one agent calls another, there are two dimensions of choice in how they
+            communicate. These choices affect transparency, debuggability, and cost.
+          </p>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Option A</th>
+                  <th>Option B</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>What gets passed</strong></td>
+                  <td>Full graph state</td>
+                  <td>Just tool parameters</td>
+                </tr>
+                <tr>
+                  <td><strong>What gets returned</strong></td>
+                  <td>Tool calls, reasoning, and final response</td>
+                  <td>Final response only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            Passing <strong>full graph state</strong> gives subagents complete context and makes
+            the system easier to debug, but increases token usage on every call. Passing
+            <strong>just tool parameters</strong> keeps communication lean and focused, at the
+            cost of less context for the receiving agent.
+          </p>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="nuances">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-nuances">
+          <div
+            data-type="mcq"
+            data-question="What is the main tradeoff when passing full graph state between agents versus just tool parameters?"
+            data-options='["Full graph state is faster; parameters are slower", "Full graph state gives more context and make it easier to debug but costs more tokens; parameters are leaner but give less context", "They are equivalent in cost but differ in security", "Parameters include reasoning; full state includes only the final answer"]'
+            data-correct="1"
+            data-explanation="Full graph state passes all intermediate reasoning, tool calls, and results, making the system transparent and easy to debug but expensive in token usage. Passing only tool parameters keeps calls lean and focused, but the receiving agent has less context to work with.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-nuances" hidden></div>
+
+      </section>
+
+      <!-- Bottom navigation -->
+      <div class="module-nav-row">
+        <a href="index.html" class="module-nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Overview
+        </a>
+        <a href="part2.html" class="module-nav-btn module-nav-btn--next">
+          Next: RAG Systems
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">agentic</span>
+        <span class="logo-bracket">]</span>
+      </div>
+      <p class="footer-tagline">Understanding the architecture of intelligent systems.</p>
+      <div class="footer-links">
+        <a href="part1.html">Architecture</a>
+        <a href="part2.html">RAG</a>
+        <a href="part3.html">MCP</a>
+        <a href="part4.html">Skills</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- quiz.js handles all quiz card logic -->
+  <script src="quiz.js"></script>
+
+  <script>
+    // ============================================================
+    // Scroll Spy (page-specific: knows this module's section order)
+    // ============================================================
+    const TOTAL_SECTIONS = 7;
+    const sectionOrder = [
+      'section-what-is-agent',
+      'section-single-agent',
+      'section-swarm',
+      'section-supervisor',
+      'section-hierarchical',
+      'section-custom',
+      'section-nuances'
+    ];
+
+    const sections     = document.querySelectorAll('.content-section');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link[data-target]');
+    const progressFill = document.getElementById('module-progress-fill');
+
+    function setActive(id) {
+      sidebarLinks.forEach(link =>
+        link.classList.toggle('active', link.dataset.target === id)
+      );
+      const idx = sectionOrder.indexOf(id);
+      if (idx >= 0 && progressFill) {
+        progressFill.style.width = ((idx + 1) / TOTAL_SECTIONS * 100) + '%';
+      }
+    }
+
+    if (sections.length > 0) setActive(sections[0].id);
+
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => spy.observe(s));
+
+    // ============================================================
+    // Parallax orbs (page-specific)
+    // ============================================================
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      document.querySelector('.orb-1').style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+      document.querySelector('.orb-2').style.transform = `translate(${x * -15}px, ${y * -15}px)`;
+      document.querySelector('.orb-3').style.transform = `translate(${x * 10}px, ${y * -10}px)`;
+    });
+  </script>
+
+</body>
+</html>

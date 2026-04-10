@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 3: Model Context Protocol</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="module.css" />
+  <link rel="stylesheet" href="part3.css" />
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      flowchart: {
+        nodeSpacing:  55,
+        rankSpacing:  65,
+        padding:      18,
+        useMaxWidth:  false,
+        curve:        'basis',
+      },
+      themeVariables: {
+        primaryColor:        '#0d1f3c',
+        primaryTextColor:    '#e0e8ff',
+        primaryBorderColor:  '#4fc3f7',
+        lineColor:           '#4fc3f7',
+        secondaryColor:      '#132848',
+        tertiaryColor:       '#050d1a',
+        background:          '#0a1628',
+        mainBkg:             '#0d1f3c',
+        nodeBorder:          '#4fc3f7',
+        clusterBkg:          '#07111f',
+        clusterBorder:       '#1e3a5f',
+        titleColor:          '#e0e8ff',
+        edgeLabelBackground: '#0a1628',
+        fontFamily:          'Inter, Segoe UI, system-ui, sans-serif',
+        fontSize:            '14px'
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-links">
+        <a href="part1.html" class="nav-link">Architecture</a>
+        <a href="part2.html" class="nav-link">RAG</a>
+        <a href="part3.html" class="nav-link nav-link--active">MCP</a>
+        <a href="part4.html" class="nav-link">Skills</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="module-page-layout">
+
+    <!-- Progress sidebar -->
+    <aside class="progress-sidebar">
+      <p class="sidebar-header">Contents</p>
+      <nav class="sidebar-nav" aria-label="Section navigation">
+
+        <a href="#section-what-is-mcp" class="sidebar-link" data-target="section-what-is-mcp">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">What is MCP?</span>
+        </a>
+
+        <a href="#section-building-blocks" class="sidebar-link" data-target="section-building-blocks">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Core Server Building Blocks</span>
+        </a>
+
+        <a href="#section-multi-server" class="sidebar-link" data-target="section-multi-server">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Multiple Servers Together</span>
+        </a>
+
+        <a href="#section-worked-example" class="sidebar-link" data-target="section-worked-example">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Worked Example</span>
+        </a>
+
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="module-main">
+
+      <!-- Module hero -->
+      <div class="module-hero">
+        <div class="module-hero-badge-row">
+          <span class="module-number">03</span>
+          <span class="module-hero-label">Model Context Protocol</span>
+        </div>
+        <h1 class="module-hero-title">Model Context Protocol</h1>
+        <p class="module-hero-subtitle">
+          MCP is the universal plug standard for AI. A single protocol that lets any agent
+          connect to any tool, data source, or service, without custom integration code for
+          every combination.
+        </p>
+        <div class="module-meta-row">
+          <span class="meta-item">4 sections</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">3 primitives</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">4 quizzes</span>
+        </div>
+        <div class="module-progress-track">
+          <div class="module-progress-fill" id="module-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           Section 00: What is MCP?
+           ============================================================ -->
+      <section class="content-section" id="section-what-is-mcp">
+
+        <div class="section-header">
+          <span class="section-num">00</span>
+          <h2 class="section-heading">What is MCP?</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            MCP (Model Context Protocol) is a standardized protocol for connecting AI models
+            to external tools, data sources, and services. Rather than every agent system
+            inventing its own integration layer, MCP defines a unified interface that any server
+            can implement and any client can consume.
+          </p>
+          <p>
+            The real power of MCP emerges when <strong>multiple servers work together</strong>,
+            combining their specialized capabilities through that unified interface.
+          </p>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">The Core Idea</div>
+            <p class="key-concept-text">
+              Think of MCP like USB-C. Before it, every device had its own port and every cable
+              only worked with certain devices. MCP is the USB-C of AI tools: one standard
+              connector, endless compatible devices.
+            </p>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="what-is-mcp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-what-is-mcp">
+          <div
+            data-type="truefalse"
+            data-question="Without MCP, every agent application that wants to connect to external tools must build its own custom integration layer for each one."
+            data-correct="true"
+            data-explanation="Correct. Before standardized protocols like MCP, each team had to write bespoke integration code for every tool they wanted to connect to. MCP eliminates this by defining a universal interface that any server can implement and any client can consume.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-what-is-mcp" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 01: Core Server Building Blocks
+           ============================================================ -->
+      <section class="content-section" id="section-building-blocks">
+
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-heading">Core Server Building Blocks</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Every MCP server exposes functionality through three primitives: <strong>Tools</strong>,
+            <strong>Resources</strong>, and <strong>Prompts</strong>. They differ in who controls
+            them and what they are for.
+          </p>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Primitive</th>
+                  <th>What it is</th>
+                  <th>Examples</th>
+                  <th>Controlled by</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tools</strong></td>
+                  <td>Functions the LLM can actively call and decides when to invoke based on context</td>
+                  <td>Search flights, send messages, create calendar events</td>
+                  <td><span class="controlled-by model">Model</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Resources</strong></td>
+                  <td>Read-only data sources that provide passive context to the model</td>
+                  <td>Company policies, Calendar, API reference</td>
+                  <td><span class="controlled-by application">Application</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Prompts</strong></td>
+                  <td>Pre-built instruction templates for working with specific tools and resources</td>
+                  <td>"Review my open PRs", "Summarize my tasks for today"</td>
+                  <td><span class="controlled-by user">User</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="primitive-cards">
+
+            <div class="primitive-card">
+              <div class="primitive-card-header">
+                <span class="primitive-icon">&#9889;</span>
+                <h3 class="primitive-name">Tools</h3>
+                <span class="controlled-by model">Model</span>
+              </div>
+              <p>
+                Tools are schema-defined interfaces using JSON Schema for validation. Each tool
+                performs a single, well-scoped operation with clearly defined inputs and outputs.
+                Tools may require user consent before execution, ensuring users stay in control
+                of actions taken on their behalf.
+              </p>
+            </div>
+
+            <div class="primitive-card">
+              <div class="primitive-card-header">
+                <span class="primitive-icon">&#128196;</span>
+                <h3 class="primitive-name">Resources</h3>
+                <span class="controlled-by application">Application</span>
+              </div>
+              <p>
+                Resources provide structured, read-only access to information: things like file
+                contents, database schemas, or API documentation, that the application retrieves
+                and injects into the model's context.
+              </p>
+            </div>
+
+            <div class="primitive-card">
+              <div class="primitive-card-header">
+                <span class="primitive-icon">&#128172;</span>
+                <h3 class="primitive-name">Prompts</h3>
+                <span class="controlled-by user">User</span>
+              </div>
+              <p>
+                Prompts are reusable, parameterized templates. They allow MCP server authors to
+                define domain-specific workflows and surface the best patterns for using their
+                server.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="building-blocks">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-building-blocks">
+          <div
+            data-type="mcq"
+            data-question="A developer wants to expose a pre-built workflow called 'Review my open PRs' in their MCP server so users can invoke it by name. Which MCP primitive should they use?"
+            data-options='["A Tool, because it performs an action", "A Resource, because it reads from GitHub", "A Prompt, because it is a reusable template invoked by the user", "A Resource and a Tool together"]'
+            data-correct="2"
+            data-explanation="Prompts are pre-built, parameterized instruction templates controlled by the user. They are designed exactly for this: letting users invoke named workflows by selecting them. Tools are for actions the model decides to call; Resources are for read-only data the application injects.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-building-blocks" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 02: How Multiple MCP Servers Work Together
+           ============================================================ -->
+      <section class="content-section" id="section-multi-server">
+
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-heading">How Multiple MCP Servers Work Together</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            The real power of MCP is not a single server in isolation. It is the ability to
+            combine multiple specialized servers through one unified client, letting the model
+            draw on different capabilities as naturally as calling local functions.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) -->|invokes prompt with params| MC[MCP Client / AI App]
+
+    MC --> PS["Prompt: plan-vacation"]
+    PS --> MC
+
+    MC -->|reads resources| R1["calendar://my-calendar/June-2024\nCalendar Server"]
+    MC -->|reads resources| R2["travel://preferences/europe\nTravel Server"]
+    MC -->|reads resources| R3["travel://past-trips/Spain-2023\nTravel Server"]
+
+    R1 & R2 & R3 -->|context injected| LLM[LLM]
+
+    LLM -->|calls tool| T1["searchFlights\nTravel Server"]
+    LLM -->|calls tool| T2["checkWeather\nWeather Server"]
+    T1 & T2 -->|results| LLM
+
+    LLM -->|user approves| T3["bookHotel\nTravel Server"]
+    LLM -->|user approves| T4["createCalendarEvent\nCalendar Server"]
+    LLM -->|user approves| T5["sendEmail\nCalendar Server"]
+
+    T3 & T4 & T5 --> R([Trip booked and confirmed])
+            </pre>
+          </div>
+
+          <p>
+            Notice the two distinct phases. First, the model passively reads resources to
+            build up context: no side effects, no approval needed. Then it actively calls tools
+            to change the world, with user approval gating the consequential actions.
+          </p>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="multi-server">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-multi-server">
+          <div
+            data-type="mcq"
+            data-question="In the multi-server diagram, which phase happens before the LLM is involved at all?"
+            data-options='["Tool execution, because tools gather data first", "Resource reading by the MCP client, which injects context before the LLM sees anything", "Prompt invocation by the LLM, which triggers resource loading", "User approval, which must come before any action"]'
+            data-correct="1"
+            data-explanation="The MCP client reads the selected Resources first and injects their contents as context before the LLM is ever called. This read-only phase has no side effects. Only after the LLM has that context does it start reasoning and invoking Tools.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-multi-server" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 03: Worked Example
+           ============================================================ -->
+      <section class="content-section" id="section-worked-example">
+
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-heading">Worked Example: Multi-Server Travel Planner</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Consider a personalized AI travel planner connected to three MCP servers: a
+            <strong>Travel Server</strong> (flights, hotels, itineraries), a
+            <strong>Weather Server</strong> (climate data and forecasts), and a
+            <strong>Calendar/Email Server</strong> (schedules and communications).
+          </p>
+
+          <!-- Step 1 -->
+          <div class="worked-step">
+            <div class="worked-step-header">
+              <span class="step-badge">Step 1</span>
+              <h3 class="step-title">User invokes a prompt with parameters</h3>
+            </div>
+            <div class="code-block">
+              <span class="code-block-label">JSON</span>
+              <pre>{
+  "prompt": "plan-vacation",
+  "arguments": {
+    "destination": "Barcelona",
+    "departure_date": "2024-06-15",
+    "return_date": "2024-06-22",
+    "budget": 3000,
+    "travelers": 2
+  }
+}</pre>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="worked-step">
+            <div class="worked-step-header">
+              <span class="step-badge">Step 2</span>
+              <h3 class="step-title">User selects resources to include as context</h3>
+            </div>
+            <ul class="resource-list">
+              <li>
+                <code>calendar://my-calendar/June-2024</code>
+                <span class="resource-server">Calendar Server</span>
+                <span class="resource-desc">surfaces available dates</span>
+              </li>
+              <li>
+                <code>travel://preferences/europe</code>
+                <span class="resource-server">Travel Server</span>
+                <span class="resource-desc">surfaces preferred airlines and hotel types</span>
+              </li>
+              <li>
+                <code>travel://past-trips/Spain-2023</code>
+                <span class="resource-server">Travel Server</span>
+                <span class="resource-desc">surfaces previously enjoyed locations</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="worked-step">
+            <div class="worked-step-header">
+              <span class="step-badge">Step 3</span>
+              <h3 class="step-title">The AI reads all resources to build context</h3>
+            </div>
+            <p>
+              Before taking any action, the model reads the selected resources to understand
+              constraints and preferences. This is the passive, read-only phase: no side
+              effects yet.
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="worked-step">
+            <div class="worked-step-header">
+              <span class="step-badge">Step 4</span>
+              <h3 class="step-title">The AI executes tools (with approval where required)</h3>
+            </div>
+            <p>Using the gathered context, the model then invokes a sequence of tools:</p>
+            <ol class="tool-sequence">
+              <li>
+                <code>searchFlights()</code>
+                <span class="tool-desc">queries airlines for NYC to Barcelona flights</span>
+              </li>
+              <li>
+                <code>checkWeather()</code>
+                <span class="tool-desc">retrieves climate forecasts for the travel dates</span>
+              </li>
+              <li>
+                <code>bookHotel()</code>
+                <span class="tool-desc">finds hotels within the specified budget</span>
+                <span class="approval-badge">User approval required</span>
+              </li>
+              <li>
+                <code>createCalendarEvent()</code>
+                <span class="tool-desc">adds the trip to the user's calendar</span>
+                <span class="approval-badge">User approval required</span>
+              </li>
+              <li>
+                <code>sendEmail()</code>
+                <span class="tool-desc">sends a confirmation with full trip details</span>
+                <span class="approval-badge">User approval required</span>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Key insight -->
+          <div class="key-concept-block">
+            <div class="key-concept-label">Key Design Insight</div>
+            <p class="key-concept-text">
+              The separation between <strong>reading</strong> (Resources, no approval needed)
+              and <strong>writing</strong> (Tools, may require consent) gives users meaningful
+              control over what the agent actually does in the world. The model can gather all
+              the context it needs freely, but cannot take consequential action without
+              explicit authorization.
+            </p>
+          </div>
+
+          <div class="result-block">
+            <span class="result-icon">&#10003;</span>
+            <p>
+              A task that could have taken hours (cross-referencing calendars, comparing
+              flights, checking weather, booking hotels, and sending confirmation emails)
+              is completed in minutes by combining Resources and Tools across three specialized
+              MCP servers through a single unified interface.
+            </p>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="worked-example">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-worked-example">
+          <div
+            data-type="scenario"
+            data-question="In the travel planner example, why does bookHotel() require user approval while checkWeather() does not?"
+            data-options='["bookHotel() is slower and needs confirmation for performance reasons", "checkWeather() is read-only retrieval with no side effects; bookHotel() makes a real-world write action with financial consequences", "bookHotel() contacts an external server while checkWeather() is local", "User approval is random and applied to any three tools in a sequence"]'
+            data-correct="1"
+            data-explanation="The core design principle of MCP is the separation between reading and writing. checkWeather() retrieves data passively, just like reading a resource. bookHotel() makes a consequential change in the real world (spending money, making a reservation) that the user must explicitly authorize. This gives users meaningful control without interrupting the model's read-only work.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-worked-example" hidden></div>
+
+      </section>
+
+      <!-- Bottom navigation -->
+      <div class="module-nav-row">
+        <a href="part2.html" class="module-nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back: RAG Systems
+        </a>
+        <a href="part4.html" class="module-nav-btn module-nav-btn--next">
+          Next: Skills Architecture
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">agentic</span>
+        <span class="logo-bracket">]</span>
+      </div>
+      <p class="footer-tagline">Understanding the architecture of intelligent systems.</p>
+      <div class="footer-links">
+        <a href="part1.html">Architecture</a>
+        <a href="part2.html">RAG</a>
+        <a href="part3.html">MCP</a>
+        <a href="part4.html">Skills</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="quiz.js"></script>
+
+  <script>
+    // ============================================================
+    // Scroll Spy
+    // ============================================================
+    const TOTAL_SECTIONS = 4;
+    const sectionOrder = [
+      'section-what-is-mcp',
+      'section-building-blocks',
+      'section-multi-server',
+      'section-worked-example'
+    ];
+
+    const sections     = document.querySelectorAll('.content-section');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link[data-target]');
+    const progressFill = document.getElementById('module-progress-fill');
+
+    function setActive(id) {
+      sidebarLinks.forEach(link =>
+        link.classList.toggle('active', link.dataset.target === id)
+      );
+      const idx = sectionOrder.indexOf(id);
+      if (idx >= 0 && progressFill) {
+        progressFill.style.width = ((idx + 1) / TOTAL_SECTIONS * 100) + '%';
+      }
+    }
+
+    if (sections.length > 0) setActive(sections[0].id);
+
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => spy.observe(s));
+
+    // ============================================================
+    // Parallax orbs
+    // ============================================================
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      document.querySelector('.orb-1').style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+      document.querySelector('.orb-2').style.transform = `translate(${x * -15}px, ${y * -15}px)`;
+      document.querySelector('.orb-3').style.transform = `translate(${x * 10}px, ${y * -10}px)`;
+    });
+  </script>
+
+</body>
+</html>

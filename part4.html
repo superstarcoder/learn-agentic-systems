@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 4: Skills Architecture</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="quiz.css" />
+  <link rel="stylesheet" href="module.css" />
+  <link rel="stylesheet" href="part4.css" />
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      flowchart: {
+        nodeSpacing:  55,
+        rankSpacing:  70,
+        padding:      18,
+        useMaxWidth:  false,
+        curve:        'basis',
+      },
+      themeVariables: {
+        primaryColor:        '#0d1f3c',
+        primaryTextColor:    '#e0e8ff',
+        primaryBorderColor:  '#4fc3f7',
+        lineColor:           '#4fc3f7',
+        secondaryColor:      '#132848',
+        tertiaryColor:       '#050d1a',
+        background:          '#0a1628',
+        mainBkg:             '#0d1f3c',
+        nodeBorder:          '#4fc3f7',
+        clusterBkg:          '#07111f',
+        clusterBorder:       '#1e3a5f',
+        titleColor:          '#e0e8ff',
+        edgeLabelBackground: '#0a1628',
+        fontFamily:          'Inter, Segoe UI, system-ui, sans-serif',
+        fontSize:            '14px'
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-links">
+        <a href="part1.html" class="nav-link">Architecture</a>
+        <a href="part2.html" class="nav-link">RAG</a>
+        <a href="part3.html" class="nav-link">MCP</a>
+        <a href="part4.html" class="nav-link nav-link--active">Skills</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="module-page-layout">
+
+    <aside class="progress-sidebar">
+      <p class="sidebar-header">Contents</p>
+      <nav class="sidebar-nav" aria-label="Section navigation">
+
+        <a href="#section-progressive-disclosure" class="sidebar-link" data-target="section-progressive-disclosure">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Progressive Disclosure</span>
+        </a>
+
+        <a href="#section-how-it-works" class="sidebar-link" data-target="section-how-it-works">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">How It Works</span>
+        </a>
+
+        <a href="#section-key-tradeoff" class="sidebar-link" data-target="section-key-tradeoff">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Key Tradeoff</span>
+        </a>
+
+        <a href="#section-real-world" class="sidebar-link" data-target="section-real-world">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Real-World Examples</span>
+        </a>
+
+        <a href="#section-hybrid" class="sidebar-link" data-target="section-hybrid">
+          <span class="sidebar-dot"></span>
+          <span class="sidebar-link-text">Hybrid Model</span>
+        </a>
+
+      </nav>
+    </aside>
+
+    <main class="module-main">
+
+      <div class="module-hero">
+        <div class="module-hero-badge-row">
+          <span class="module-number">04</span>
+          <span class="module-hero-label">Skills Architecture</span>
+        </div>
+        <h1 class="module-hero-title">Skills Architecture</h1>
+        <p class="module-hero-subtitle">
+          Skills let a single agent load specialized knowledge on demand, keeping context
+          lean until specialization is needed. A lightweight path to multi-agent power
+          without the overhead of multiple agent instances.
+        </p>
+        <div class="module-meta-row">
+          <span class="meta-item">5 sections</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">3 loading levels</span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">5 quizzes</span>
+        </div>
+        <div class="module-progress-track">
+          <div class="module-progress-fill" id="module-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           Section 00: Progressive Disclosure
+           ============================================================ -->
+      <section class="content-section" id="section-progressive-disclosure">
+
+        <div class="section-header">
+          <span class="section-num">00</span>
+          <h2 class="section-heading">Skills: Progressive Disclosure</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            In the skills pattern, an agent loads specialized prompts and knowledge
+            <strong>on-demand</strong>. Think of it as progressive disclosure for agent
+            capabilities: rather than loading everything upfront, the agent only pulls in
+            what it needs, when it needs it.
+          </p>
+
+          <h3 class="subsection-heading">Where Skills Fit</h3>
+          <p>
+            While the skills architecture technically uses a <strong>single agent</strong>,
+            it shares characteristics with multi-agent systems by enabling that agent to
+            dynamically adopt specialized personas. This gives you similar benefits to
+            multi-agent patterns (like distributed development and fine-grained context
+            control) but through a lighter-weight, prompt-driven method rather than managing
+            multiple agent instances.
+          </p>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">Controversial Take</div>
+            <p class="key-concept-text">
+              Skills can be considered a <strong>quasi-multi-agent architecture</strong>. One
+              agent, many personas, loaded progressively. The boundary between "a very
+              adaptable single agent" and "a lightweight multi-agent system" is blurrier than
+              it looks.
+            </p>
+          </div>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) --> A[Single Agent]
+
+    A -->|startup: loads names + descriptions only| SK[Skill Registry]
+
+    SK --> S1[Skill: Code Review]
+    SK --> S2[Skill: Data Analysis]
+    SK --> S3[Skill: Creative Writing]
+    SK --> S4[Skill: SQL Expert]
+
+    A -->|skill becomes relevant| LD[Load Full Skill Context]
+    LD -->|instructions + scripts + resources| A
+
+    A -->|discovers additional detail as needed| EX[Extra Files within Skill]
+    EX --> A
+
+    A --> R([Response])
+            </pre>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="progressive-disclosure">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-progressive-disclosure">
+          <div
+            data-type="mcq"
+            data-question="In the skills pattern, what does the agent know about its skills at startup?"
+            data-options='["The full instructions and resources for every available skill", "Only skill names and descriptions — a lightweight index, nothing more", "Nothing — skills are discovered dynamically during the conversation", "Only the skills that were used in the previous session"]'
+            data-correct="1"
+            data-explanation="At startup, the agent loads only a lightweight registry of skill names and descriptions. This keeps the initial context window small. Full skill context (instructions, persona, resources) is only loaded when a skill becomes relevant to the current task.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-progressive-disclosure" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 01: How It Works
+           ============================================================ -->
+      <section class="content-section" id="section-how-it-works">
+
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-heading">How It Works</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Skills are packaged as <strong>directories</strong> containing instructions,
+            scripts, and resources. Loading happens in three progressive levels:
+          </p>
+
+          <div class="loading-levels">
+            <div class="loading-level">
+              <div class="level-marker">
+                <span class="level-num">1</span>
+                <div class="level-line"></div>
+              </div>
+              <div class="level-content">
+                <h3 class="level-title">At startup</h3>
+                <p>
+                  The agent knows only skill names and descriptions. It has a lightweight
+                  index of what's available, nothing more.
+                </p>
+              </div>
+            </div>
+
+            <div class="loading-level">
+              <div class="level-marker">
+                <span class="level-num">2</span>
+                <div class="level-line"></div>
+              </div>
+              <div class="level-content">
+                <h3 class="level-title">When a skill becomes relevant</h3>
+                <p>
+                  The agent loads that skill's full context: its instructions, persona, and
+                  resources. This is the on-demand disclosure step.
+                </p>
+              </div>
+            </div>
+
+            <div class="loading-level level-last">
+              <div class="level-marker">
+                <span class="level-num">3</span>
+              </div>
+              <div class="level-content">
+                <h3 class="level-title">As needed within a skill</h3>
+                <p>
+                  Additional files within the skill directory provide a third level of detail
+                  that the agent discovers only when the task requires it.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <p>
+            This three-level structure keeps the agent's active context lean until
+            specialization is actually needed.
+          </p>
+
+          <h3 class="subsection-heading">Best For</h3>
+          <ul class="examples-list">
+            <li>Single agents with <strong>many possible specializations</strong> that don't all need to be active at once.</li>
+            <li>Situations where you <strong>don't need hard constraints</strong> between capabilities.</li>
+            <li><strong>Team distribution</strong> where different teams maintain different skills independently.</li>
+            <li>Common use cases: coding agents, creative assistants, or general-purpose assistants with domain plugins.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="how-it-works">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-how-it-works">
+          <div
+            data-type="mcq"
+            data-question="What is the primary benefit of skills' three-level loading structure?"
+            data-options='["It prevents the agent from ever loading more than one skill at a time", "It keeps the agent's active context lean until specialization is actually needed", "It loads all skills simultaneously so they are ready instantly", "It requires user confirmation before each skill level loads"]'
+            data-correct="1"
+            data-explanation="The three levels (startup index, full skill load, extra files) exist so the agent never carries more context than the current task requires. Only names and descriptions load upfront; full instructions load on-demand; deep detail loads only when the task drills into it.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-how-it-works" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 02: Key Tradeoff
+           ============================================================ -->
+      <section class="content-section" id="section-key-tradeoff">
+
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-heading">Key Tradeoff</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            As skills are loaded throughout a conversation, their context accumulates in the
+            conversation history. This can lead to <strong>token bloat</strong> on subsequent
+            calls: the more skills that get loaded in a session, the larger the context window
+            grows, increasing cost and potentially degrading performance.
+          </p>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart LR
+    T1["Turn 1\nBase Agent"] -->|loads Skill A| T2["Turn 2\nBase + Skill A"]
+    T2 -->|loads Skill B| T3["Turn 3\nBase + Skill A + Skill B"]
+    T3 -->|loads Skill C| T4["Turn 4\nBase + Skill A + Skill B + Skill C"]
+
+    T4 -->|token bloat risk| W[["Context window grows\nwith each skill loaded"]]
+            </pre>
+          </div>
+
+          <div class="tradeoff-grid">
+            <div class="tradeoff-panel tradeoff-downside">
+              <div class="tradeoff-header">
+                <span class="tradeoff-icon">&#9650;</span>
+                <h3 class="tradeoff-title">The Cost</h3>
+              </div>
+              <p>
+                Skills accumulate in conversation history. A long session that touches many
+                specializations will have a progressively larger context window, increasing
+                token cost and risking performance degradation.
+              </p>
+            </div>
+            <div class="tradeoff-panel tradeoff-upside">
+              <div class="tradeoff-header">
+                <span class="tradeoff-icon">&#9660;</span>
+                <h3 class="tradeoff-title">The Benefit</h3>
+              </div>
+              <p>
+                No inter-agent communication to manage, no routing logic, and the user
+                interacts with a single coherent agent throughout the entire session.
+                Simplicity is the win.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="key-tradeoff">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-key-tradeoff">
+          <div
+            data-type="mcq"
+            data-question="What causes 'token bloat' in a skills-based architecture?"
+            data-options='["Storing too many skill directories on disk", "Skill contexts accumulate in the conversation history as more skills are loaded throughout a session", "Skills conflict with each other and generate redundant output", "The skill registry grows too large to fit in memory"]'
+            data-correct="1"
+            data-explanation="Each time a skill is loaded, its full context (instructions, persona, resources) is added to the conversation history and stays there. Over a long session that touches many skills, this accumulated context makes every subsequent LLM call more expensive and risks hitting context window limits.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-key-tradeoff" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 03: Real-World Examples
+           ============================================================ -->
+      <section class="content-section" id="section-real-world">
+
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-heading">Real-World Examples</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="example-cards">
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">✏️</span>
+                <span class="example-card-title">Cursor / Claude Code</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A coding agent that loads language-specific or framework-specific skill contexts (React, FastAPI, etc.) only when the relevant files are opened. Context stays lean until it is needed.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🤖</span>
+                <span class="example-card-title">General-Purpose Assistants</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>Assistants like Claude with custom instructions: the base agent loads a specialized persona (legal assistant, data analyst, creative writer) only when the conversation warrants it.</p>
+              </div>
+            </details>
+            <details class="example-card">
+              <summary class="example-card-trigger">
+                <span class="example-card-icon">🏢</span>
+                <span class="example-card-title">Internal Enterprise Bots</span>
+                <svg class="example-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </summary>
+              <div class="example-card-body">
+                <p>A company assistant with HR, Finance, and Engineering skills maintained by separate teams, loaded on-demand based on the user's department or question type.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="real-world">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-real-world">
+          <div
+            data-type="truefalse"
+            data-question="Cursor loads all available language-specific skill contexts into memory at startup, regardless of which files are currently open."
+            data-correct="false"
+            data-explanation="Cursor uses on-demand loading: it loads language or framework skill contexts only when the relevant files are opened. This is exactly the progressive disclosure pattern in action, keeping the active context lean until specialization is needed.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-real-world" hidden></div>
+
+      </section>
+
+      <!-- ============================================================
+           Section 04: Hybrid Model
+           ============================================================ -->
+      <section class="content-section" id="section-hybrid">
+
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-heading">Hybrid Model: Skills Inside Multi-Agent Systems</h2>
+        </div>
+
+        <div class="section-body">
+          <p>
+            Skills are not limited to single-agent setups. In practice, the most
+            sophisticated systems combine both: using multi-agent architecture for high-level
+            orchestration and skills within individual agents for lightweight, on-demand
+            specialization.
+          </p>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">Key Insight</div>
+            <p class="key-concept-text">
+              Skills and agents solve different granularities of the same problem. A full
+              subagent is worth the overhead when the specialization needs its own tools, its
+              own reasoning loop, or hard isolation. A skill is the right call when the
+              specialization is prompt-driven and a separate agent isn't justified.
+            </p>
+          </div>
+
+          <div class="diagram-container">
+            <pre class="mermaid">
+flowchart TD
+    U([User]) --> SUP[Supervisor Agent]
+
+    SUP --> A1[Research Agent]
+    SUP --> A2[Engineering Agent]
+    SUP --> A3[Writing Agent]
+
+    A1 -->|loads on demand| SK1[Skill: Academic Papers]
+    A1 -->|loads on demand| SK2[Skill: Web Scraping]
+
+    A2 -->|loads on demand| SK3[Skill: React]
+    A2 -->|loads on demand| SK4[Skill: FastAPI]
+    A2 -->|loads on demand| SK5[Skill: SQL]
+
+    A3 -->|loads on demand| SK6[Skill: Technical Docs]
+    A3 -->|loads on demand| SK7[Skill: Marketing Copy]
+
+    A1 & A2 & A3 -->|results| SUP
+    SUP --> R([Response])
+            </pre>
+          </div>
+
+          <h3 class="subsection-heading">Where skills plug into multi-agent systems</h3>
+          <ul class="examples-list">
+            <li>
+              <strong>At the subagent level</strong>: each subagent stays lean by default and
+              loads skills on-demand as the task requires. A research agent might load an
+              "academic paper" skill or a "web scraping" skill depending on the source it
+              needs to query.
+            </li>
+            <li>
+              <strong>At the supervisor level</strong>: a supervisor can use skills to switch
+              between orchestration strategies (for example, loading a "code review workflow"
+              skill vs. a "report generation workflow" skill).
+            </li>
+            <li>
+              <strong>As a substitute for lightweight subagents</strong>: if a specialization
+              is prompt-driven and doesn't need its own tools or isolated reasoning loop, a
+              skill loaded into an existing agent can do the job without the cost of spinning
+              up a full subagent.
+            </li>
+          </ul>
+
+          <h3 class="subsection-heading">When to use a skill vs. a full subagent</h3>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Use a Skill when&hellip;</th>
+                  <th>Use a separate Agent when&hellip;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>The specialization is prompt-driven</td>
+                  <td>The specialization needs its own dedicated tools</td>
+                </tr>
+                <tr>
+                  <td>Context isolation is not critical</td>
+                  <td>You need hard constraints between capabilities</td>
+                </tr>
+                <tr>
+                  <td>The subtask is lightweight</td>
+                  <td>The subtask is complex enough to warrant its own reasoning loop</td>
+                </tr>
+                <tr>
+                  <td>You want to avoid inter-agent overhead</td>
+                  <td>Parallel execution across agents is important</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="key-concept-block">
+            <div class="key-concept-label">Real-World Example</div>
+            <p class="key-concept-text">
+              A software engineering agent system where a supervisor routes between a Research
+              Agent, an Engineering Agent, and a Writing Agent. The Engineering Agent alone
+              might need to handle React, FastAPI, SQL, and Rust depending on the project.
+              Rather than spinning up four separate engineering subagents, the single
+              Engineering Agent loads the relevant language or framework skill on-demand,
+              keeping the multi-agent graph simple at the top level while still achieving deep
+              specialization within each node.
+            </p>
+          </div>
+        </div>
+
+        <div class="quiz-trigger-row">
+          <button class="btn-quiz" data-quiz="hybrid">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quiz Me
+          </button>
+        </div>
+
+        <template id="quiz-data-hybrid">
+          <div
+            data-type="scenario"
+            data-question="An Engineering Agent needs to handle React, FastAPI, SQL, and Rust depending on the project. What is the best approach?"
+            data-options='["Create four separate Engineering Agents, one per language or framework", "Load all four language skills into the Engineering Agent at startup so they are always ready", "Use a single Engineering Agent that loads the relevant language skill on-demand as the task requires", "Have the supervisor directly handle language-specific routing instead of delegating to an Engineering Agent"]'
+            data-correct="2"
+            data-explanation="A single Engineering Agent with on-demand skill loading keeps the multi-agent graph simple while still achieving deep specialization. Loading all four skills at startup would cause unnecessary token bloat. Spinning up four separate agents adds inter-agent overhead for a problem that is fundamentally prompt-driven, not tool-driven.">
+          </div>
+        </template>
+
+        <div class="quiz-panel" id="quiz-hybrid" hidden></div>
+
+      </section>
+
+      <!-- Bottom navigation -->
+      <div class="module-nav-row">
+        <a href="part3.html" class="module-nav-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back: Model Context Protocol
+        </a>
+        <a href="index.html" class="module-nav-btn module-nav-btn--next">
+          Back to Overview
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-bracket">[</span>
+        <span class="logo-text">agentic</span>
+        <span class="logo-bracket">]</span>
+      </div>
+      <p class="footer-tagline">Understanding the architecture of intelligent systems.</p>
+      <div class="footer-links">
+        <a href="part1.html">Architecture</a>
+        <a href="part2.html">RAG</a>
+        <a href="part3.html">MCP</a>
+        <a href="part4.html">Skills</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="quiz.js"></script>
+
+  <script>
+    // ============================================================
+    // Scroll Spy
+    // ============================================================
+    const TOTAL_SECTIONS = 5;
+    const sectionOrder = [
+      'section-progressive-disclosure',
+      'section-how-it-works',
+      'section-key-tradeoff',
+      'section-real-world',
+      'section-hybrid'
+    ];
+
+    const sections     = document.querySelectorAll('.content-section');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link[data-target]');
+    const progressFill = document.getElementById('module-progress-fill');
+
+    function setActive(id) {
+      sidebarLinks.forEach(link =>
+        link.classList.toggle('active', link.dataset.target === id)
+      );
+      const idx = sectionOrder.indexOf(id);
+      if (idx >= 0 && progressFill) {
+        progressFill.style.width = ((idx + 1) / TOTAL_SECTIONS * 100) + '%';
+      }
+    }
+
+    if (sections.length > 0) setActive(sections[0].id);
+
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => spy.observe(s));
+
+    // ============================================================
+    // Parallax orbs
+    // ============================================================
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      document.querySelector('.orb-1').style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+      document.querySelector('.orb-2').style.transform = `translate(${x * -15}px, ${y * -15}px)`;
+      document.querySelector('.orb-3').style.transform = `translate(${x * 10}px, ${y * -10}px)`;
+    });
+  </script>
+
+</body>
+</html>
