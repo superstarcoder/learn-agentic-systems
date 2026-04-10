@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create - Agentic Systems 101</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="create.css" />
+</head>
+<body class="create-page">
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="part1.html" class="nav-link">Architecture</a>
+        <a href="part2.html" class="nav-link">RAG</a>
+        <a href="part3.html" class="nav-link">MCP</a>
+        <a href="part4.html" class="nav-link">Skills</a>
+        <a href="create.html" class="nav-link nav-link--active">Create</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Create Layout -->
+  <div class="create-layout">
+
+    <!-- Canvas Area -->
+    <div class="canvas-wrap" id="canvasWrap">
+      <!-- SVG for connections (sits under nodes, same transform) -->
+      <svg class="conn-svg" id="connSvg">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                  refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="rgba(79,195,247,0.7)" />
+          </marker>
+          <marker id="arrowhead-selected" markerWidth="10" markerHeight="7"
+                  refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#4fc3f7" />
+          </marker>
+        </defs>
+      </svg>
+
+      <!-- World: nodes live here, transformed for zoom/pan -->
+      <div class="world" id="world"></div>
+
+      <!-- Zoom controls -->
+      <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomIn" title="Zoom in">+</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+        <button class="zoom-btn" id="zoomOut" title="Zoom out">−</button>
+        <button class="zoom-btn zoom-btn--reset" id="zoomReset" title="Reset view">⌂</button>
+      </div>
+
+      <!-- Empty state hint -->
+      <div class="canvas-hint" id="canvasHint">
+        <div class="canvas-hint-icon">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="16" width="14" height="10" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="26" y="8" width="14" height="10" rx="3" stroke="currentColor" stroke-width="2"/>
+            <rect x="26" y="30" width="14" height="10" rx="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M22 21h4M22 21l-4-8h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="22" y1="21" x2="26" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="22" y1="21" x2="26" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p>Drag nodes from the sidebar, or load a template to get started.</p>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Templates</div>
+        <button class="template-btn" id="templateSingleAgent">
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 9v5M7 14h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Single Agent
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Nodes</div>
+        <div class="palette">
+
+          <div class="palette-item" draggable="true" data-type="user">
+            <div class="palette-node-dot" style="background: #34d399;"></div>
+            <div class="palette-node-icon palette-node-icon--user">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 17c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span>User</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="agent">
+            <div class="palette-node-dot" style="background: #a78bfa;"></div>
+            <div class="palette-node-icon palette-node-icon--agent">
+              <svg viewBox="0 0 20 20" fill="none"><rect x="5" y="7" width="10" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="11" r="1" fill="currentColor"/><path d="M8 16v2M12 16v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 7V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="4" r="1" fill="currentColor"/></svg>
+            </div>
+            <span>Agent</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="mcp">
+            <div class="palette-node-dot" style="background: #4fc3f7;"></div>
+            <div class="palette-node-icon palette-node-icon--mcp">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span>MCP Server</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="tool">
+            <div class="palette-node-dot" style="background: #fb923c;"></div>
+            <div class="palette-node-icon palette-node-icon--tool">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M14.5 3.5l-3 3 2 2 3-3a3 3 0 01-4 4l-5 5a1.5 1.5 0 01-2-2l5-5a3 3 0 014-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </div>
+            <span>Tool</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="response">
+            <div class="palette-node-dot" style="background: #2dd4bf;"></div>
+            <div class="palette-node-icon palette-node-icon--response">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span>Response</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="skill">
+            <div class="palette-node-dot" style="background: #f472b6;"></div>
+            <div class="palette-node-icon palette-node-icon--skill">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M10 3v4M10 13v4M3 10h4M13 10h4M5.6 5.6l2.8 2.8M11.6 11.6l2.8 2.8M14.4 5.6l-2.8 2.8M8.4 11.6l-2.8 2.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span>Skill</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="registry">
+            <div class="palette-node-dot" style="background: #818cf8;"></div>
+            <div class="palette-node-icon palette-node-icon--registry">
+              <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <span>Skill Registry</span>
+          </div>
+
+          <div class="palette-item" draggable="true" data-type="custom">
+            <div class="palette-node-dot" style="background: #94a3b8;"></div>
+            <div class="palette-node-icon palette-node-icon--custom">
+              <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <span>Custom</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sidebar-section sidebar-section--actions">
+        <div class="sidebar-section-label">Actions</div>
+        <div class="action-btns">
+          <button class="action-btn" id="btnUndo" title="Undo (Ctrl+Z)">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 8H13a4 4 0 010 8H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 5L4 8l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Undo
+          </button>
+          <button class="action-btn" id="btnRedo" title="Redo (Ctrl+Y)">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M16 8H7a4 4 0 000 8h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Redo
+          </button>
+          <button class="action-btn action-btn--danger" id="btnClear" title="Clear canvas">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-section sidebar-section--help">
+        <div class="sidebar-section-label">How to use</div>
+        <ul class="help-list">
+          <li>Drag nodes onto the canvas</li>
+          <li>Hover a node to see ports, drag from a port to connect</li>
+          <li>Click a connection to add a label</li>
+          <li>Double-click a node to rename it</li>
+          <li>Click a node or connection + Delete to remove</li>
+          <li>Scroll to zoom, drag empty space to pan</li>
+        </ul>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Connection label input (floats over canvas) -->
+  <div class="conn-label-popup" id="connLabelPopup" style="display:none">
+    <input type="text" id="connLabelInput" placeholder="Add label..." maxlength="40" />
+    <button id="connLabelSave">Save</button>
+  </div>
+
+  <script src="create.js"></script>
+</body>
+</html>

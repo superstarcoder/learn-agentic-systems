@@ -49,10 +49,12 @@
   <nav class="nav">
     <div class="nav-inner">
       <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
         <a href="part1.html" class="nav-link">Architecture</a>
         <a href="part2.html" class="nav-link">RAG</a>
         <a href="part3.html" class="nav-link">MCP</a>
         <a href="part4.html" class="nav-link nav-link--active">Skills</a>
+        <a href="create.html" class="nav-link">Create</a>
       </div>
     </div>
   </nav>
@@ -191,7 +193,7 @@ flowchart TD
           <div
             data-type="mcq"
             data-question="In the skills pattern, what does the agent know about its skills at startup?"
-            data-options='["The full instructions and resources for every available skill", "Only skill names and descriptions — a lightweight index, nothing more", "Nothing — skills are discovered dynamically during the conversation", "Only the skills that were used in the previous session"]'
+            data-options='["The full instructions and resources for every available skill", "Only skill names and descriptions. A lightweight index, nothing more", "Nothing. Skills are discovered dynamically during the conversation", "Only the skills that were used in the previous session"]'
             data-correct="1"
             data-explanation="At startup, the agent loads only a lightweight registry of skill names and descriptions. This keeps the initial context window small. Full skill context (instructions, persona, resources) is only loaded when a skill becomes relevant to the current task.">
           </div>
