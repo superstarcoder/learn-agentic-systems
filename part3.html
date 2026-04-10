@@ -320,8 +320,9 @@ flowchart TD
     R1 & R2 & R3 -->|context injected| LLM[LLM]
 
     LLM -->|calls tool| T1["searchFlights\nTravel Server"]
-    LLM -->|calls tool| T2["checkWeather\nWeather Server"]
-    T1 & T2 -->|results| LLM
+    LLM --> T2["checkWeather\nWeather Server"]
+    T1 -->|results| LLM
+    T2 --> LLM
 
     LLM -->|user approves| T3["bookHotel\nTravel Server"]
     LLM -->|user approves| T4["createCalendarEvent\nCalendar Server"]

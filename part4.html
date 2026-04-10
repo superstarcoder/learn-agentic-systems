@@ -166,8 +166,8 @@ flowchart TD
     SK --> S3[Skill: Creative Writing]
     SK --> S4[Skill: SQL Expert]
 
-    A -->|skill becomes relevant| LD[Load Full Skill Context]
-    LD -->|instructions + scripts + resources| A
+    A -->|skill triggered| LD["Load Full Skill Context\ninstructions + scripts + resources"]
+    LD --> A
 
     A -->|discovers additional detail as needed| EX[Extra Files within Skill]
     EX --> A
